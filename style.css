@@ -51,6 +51,10 @@ ul li {
     background: #31BDc3;
     fill: white;
 }
+.eraser-icon {
+    cursor: url(eraser.ico) 8 10,auto;
+}
+
 /**/
 #color-wrapper {
     display: block;

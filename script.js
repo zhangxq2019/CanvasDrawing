@@ -19,14 +19,13 @@ let historyData = []
 let hasChanged = false
 let painting = false
 let clear = false
-let isTouchDevice = 'ontouchstart' in document.documentElement
-if (isTouchDevice) {
+if (document.body.ontouchstart !== undefined) {
     canvas.ontouchstart = (e) => {
-        painting = true
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
+        painting = true
         if (clear) {
-            ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+            ctx.clearRect(x-15, y-15, 30, 30)
         }
 
         last = [x, y]
@@ -36,9 +35,10 @@ if (isTouchDevice) {
         let y = e.touches[0].clientY
         if (painting) {
             if (clear) {
-                ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+                ctx.clearRect(x-15, y-15, 30, 30)
+            }else {
+                drawLine(last[0], last[1], x, y)
             }
-            drawLine(last[0], last[1], x, y)
             last = [x, y]
         }
 
@@ -113,6 +113,7 @@ eraserCanvas.addEventListener('mousedown', () => {
     clear = true
     eraserCanvas.classList.add('active')
     penCanvas.classList.remove('active')
+    canvas.classList.add('eraser-icon')
 })
 //擦除
 resetCanvas.addEventListener('mousedown', () => {
