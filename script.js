@@ -18,64 +18,77 @@ ctx.lineWidth = 12
 let historyData = []
 let hasChanged = false
 let painting = false
-let clear =false
+let clear = false
 let isTouchDevice = 'ontouchstart' in document.documentElement
-if(isTouchDevice){
-    canvas.ontouchstart=(e)=>{
+if (isTouchDevice) {
+    canvas.ontouchstart = (e) => {
+        painting = true
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
-        last = [x,y]
+        if (clear) {
+            ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+        }
+
+        last = [x, y]
     }
-    canvas.ontouchmove=(e)=>{
+    canvas.ontouchmove = (e) => {
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
-        drawLine(last[0],last[1],x,y)
-        last = [x,y]
+        if (painting) {
+            if (clear) {
+                ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+            }
+            drawLine(last[0], last[1], x, y)
+            last = [x, y]
+        }
+
     }
-    canvas.ontouchend = (e)=>{
-        forwardImg = ctx.getImageData(0,0,canvas.width,canvas.height)
+    canvas.ontouchend = (e) => {
+        painting = false
+        forwardImg = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        saveData(forwardImg)
+    }
+} else {
+    canvas.onmousedown = (e) => {
+        painting = true
+        if (clear) {
+            ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+        }
+        last = [e.clientX, e.clientY]
+        console.log(e.clientX)
+        console.log(e.clientY)
+    }
+
+    canvas.onmousemove = (e) => {
+        if (painting === true) {
+            if (clear) {
+                ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+            } else {
+                console.log(e.clientX)
+                console.log(e.clientY)
+                drawLine(last[0], last[1], e.clientX, e.clientY)
+                last = [e.clientX, e.clientY]
+            }
+        }
+    }
+    canvas.onmouseup = () => {
+        painting = false
+        forwardImg = ctx.getImageData(0, 0, canvas.width, canvas.height)
         saveData(forwardImg)
     }
 }
-else{
-canvas.onmousedown = (e)=>{
-    painting = true
-    if (clear) {
-        ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
-    }
-    last= [e.clientX,e.clientY]
-    console.log(e.clientX)
-    console.log(e.clientY)
-}
 
-canvas.onmousemove = (e)=> {
-    if (painting === true) {
-        if (clear) {
-            ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
-        } else {
-            console.log(e.clientX)
-            console.log(e.clientY)
-            drawLine(last[0], last[1], e.clientX, e.clientY)
-            last = [e.clientX, e.clientY]
-        }
-    }
-}
-canvas.onmouseup = ()=>{
-    painting = false
-    forwardImg = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    saveData(forwardImg)
-}
-}
-function drawLine(startX,startY,endX,endY){
+function drawLine(startX, startY, endX, endY) {
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.beginPath()
-    ctx.moveTo(startX,startY)
-    ctx.lineTo(endX,endY)
+    ctx.moveTo(startX, startY)
+    ctx.lineTo(endX, endY)
     ctx.closePath()
     ctx.stroke()
     hasChanged = true
 }
+
 //图标
 //
 // window.onload= function (){
@@ -90,28 +103,28 @@ function drawLine(startX,startY,endX,endY){
 //         },false)
 //     }
 // }
-penCanvas.addEventListener('click',()=>{
-    clear= false
+penCanvas.addEventListener('click', () => {
+    clear = false
     eraserCanvas.classList.remove('active')
     penCanvas.classList.add('active')
 })
 //橡皮差
-eraserCanvas.addEventListener('mousedown',()=>{
+eraserCanvas.addEventListener('mousedown', () => {
     clear = true
     eraserCanvas.classList.add('active')
     penCanvas.classList.remove('active')
 })
 //擦除
-resetCanvas.addEventListener('mousedown',()=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height)
+resetCanvas.addEventListener('mousedown', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 })
-resetCanvas.addEventListener('mouseup',()=>{
+resetCanvas.addEventListener('mouseup', () => {
     resetCanvas.classList.remove('active')
 })
 
 
 //下载
-downloadButton.addEventListener('click',()=>{
+downloadButton.addEventListener('click', () => {
     let imgUrl = canvas.toDataURL('image/png')
     let saveA = document.createElement('a')
     document.body.appendChild(saveA)
@@ -120,49 +133,52 @@ downloadButton.addEventListener('click',()=>{
     saveA.target = '_blank'
     saveA.click()
     hasChanged = false
-},false)
+}, false)
 
 // 返回
-back.addEventListener('click',()=>{
-    if(historyData.length < 2) return window.alert('再撤销就没有了')
-    ctx.putImageData(historyData[historyData.length-2],0,0)
+back.addEventListener('click', () => {
+    if (historyData.length < 2) return window.alert('再撤销就没有了')
+    ctx.putImageData(historyData[historyData.length - 2], 0, 0)
     historyData.pop()
-},false)
+}, false)
 
 
 // 颜色
-window.onload = function (){
+window.onload = function () {
     let index = 0;
-    for(let i = 0;i< colorItems.length;i++){
-        colorItems[i].addEventListener('mousedown',()=>{
+    for (let i = 0; i < colorItems.length; i++) {
+        colorItems[i].addEventListener('mousedown', () => {
             colorItems[index].classList.remove('color-active')
             index = i
             colorItems[i].classList.add('color-active')
-        },false)
+        }, false)
     }
 }
-for (let i = 0;i<colorItems.length;i++){
-    colorItems[i].addEventListener('click',()=>{
+for (let i = 0; i < colorItems.length; i++) {
+    colorItems[i].addEventListener('click', () => {
         ctx.strokeStyle = colorItems[i].style.backgroundColor
-    },false)
+    }, false)
 }
 //更改
-inputRange.addEventListener('change',()=>{
+inputRange.addEventListener('change', () => {
     ctx.lineWidth = inputRange.value
-},false)
-function show(){
+}, false)
+
+function show() {
     ctx.lineWidth = inputRange.value
     document.getElementById('value').innerHTML = ctx.lineWidth
 }
+
 function saveData(data) {
-    return historyData.length <= 10? historyData.push(data) : historyData.shift()
+    return historyData.length <= 10 ? historyData.push(data) : historyData.shift()
 }
+
 //解决拖拽问题
 document.addEventListener('touchmove', e => {
     e.preventDefalut();
 }, {passive: false})
 
-window.onbeforeunload=()=>{
-    if(hasChanged)
+window.onbeforeunload = () => {
+    if (hasChanged)
         return '当前未保存页面是否离开？'
 }
