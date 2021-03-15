@@ -3,9 +3,11 @@ let ctx = canvas.getContext('2d')
 canvas.width = document.documentElement.clientWidth
 canvas.height = document.documentElement.clientHeight
 //icon
+let penCanvas = document.querySelector('.pen')
+let eraserCanvas = document.querySelector('.eraser')
 let resetCanvas = document.querySelector('.clear')
 let downloadButton = document.querySelector('.download')
-let back =document.querySelector('.back')
+let back = document.querySelector('.back')
 
 let colorItems = document.querySelectorAll('.color-item')
 let optionsItems = document.querySelectorAll('.options-item')
@@ -16,8 +18,7 @@ ctx.lineWidth = 12
 let historyData = []
 let hasChanged = false
 let painting = false
-
-
+let clear =false
 let isTouchDevice = 'ontouchstart' in document.documentElement
 if(isTouchDevice){
     canvas.ontouchstart=(e)=>{
@@ -39,18 +40,24 @@ if(isTouchDevice){
 else{
 canvas.onmousedown = (e)=>{
     painting = true
+    if (clear) {
+        ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+    }
     last= [e.clientX,e.clientY]
     console.log(e.clientX)
     console.log(e.clientY)
 }
 
-canvas.onmousemove = (e)=>{
-    if(painting === true){
-
-    console.log(e.clientX)
-    console.log(e.clientY)
-    drawLine(last[0],last[1],e.clientX,e.clientY)
-    last= [e.clientX,e.clientY]
+canvas.onmousemove = (e)=> {
+    if (painting === true) {
+        if (clear) {
+            ctx.clearRect(e.clientX - 15, e.clientY - 15, 30, 30)
+        } else {
+            console.log(e.clientX)
+            console.log(e.clientY)
+            drawLine(last[0], last[1], e.clientX, e.clientY)
+            last = [e.clientX, e.clientY]
+        }
     }
 }
 canvas.onmouseup = ()=>{
@@ -70,16 +77,30 @@ function drawLine(startX,startY,endX,endY){
     hasChanged = true
 }
 //图标
-window.onload = function() {
-    let index = 0
-    for(let i = 0;i< optionsItems.length;i++){
-        optionsItems[i].addEventListener('mousedown',()=>{
-            optionsItems[index].classList.remove('active')
-            index = i
-            optionsItems[i].classList.add('active')
-        },false)
-    }
-}
+//
+// window.onload= function (){
+//     console.log(optionsItems);
+//     let index = 0
+//     for(let i = 0;i< optionsItems.length;i++){
+//         optionsItems[i].addEventListener('click',()=>{
+//             console.log(optionsItems);
+//             optionsItems[index].classList.remove('active')
+//             index = i
+//             optionsItems[i].classList.add('active')
+//         },false)
+//     }
+// }
+penCanvas.addEventListener('click',()=>{
+    clear= false
+    eraserCanvas.classList.remove('active')
+    penCanvas.classList.add('active')
+})
+//橡皮差
+eraserCanvas.addEventListener('mousedown',()=>{
+    clear = true
+    eraserCanvas.classList.add('active')
+    penCanvas.classList.remove('active')
+})
 //擦除
 resetCanvas.addEventListener('mousedown',()=>{
     ctx.clearRect(0,0,canvas.width,canvas.height)
@@ -140,5 +161,5 @@ function saveData(data) {
 
 window.onbeforeunload=()=>{
     if(hasChanged)
-        return '是否当前未保存页面？'
+        return '当前未保存页面是否离开？'
 }
