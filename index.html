@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas画板</title>
+    <link rel="stylesheet" href="style.css">
+    <style type="text/css">
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<!--icon-->
+<div class="wrapper">
+    <ul class="options">
+        <li class="options-item clear">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-eraser"></use>
+            </svg>
+        </li>
+        <li class="options-item back">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-back"></use>
+            </svg>
+        </li>
+        <li class="options-item download">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-download"></use>
+            </svg>
+        </li>
+    </ul>
+</div>
+
+<!--颜色-->
+<div id="color-wrapper">
+    <ul class="color">
+        <li class="color-item" style="background: #fff"></li>
+        <li class="color-item" style="background: #000000"></li>
+        <li class="color-item" style="background: #ff0000"></li>
+        <li class="color-item" style="background: #ffff00"></li>
+        <li class="color-item" style="background: #0000ff;"></li>
+        <li class="color-item" style="background: #008000;"></li>
+        <li class="color-item" style="background: #800080;"></li>
+        <li class="color-item" style="background: #ffa500"></li>
+        <li class="color-item" style="background: #808080;"></li>
+    </ul>
+</div>
+<canvas id="canvas"></canvas>
+<div id="range-wrapper">
+    <input type="range" id="range" name="range" min="1" max="22" title="调整笔刷粗细" oninput="show()">
+    <span id="value">12</span>
+</div>
+<script src="script.js"></script>
+<script src="http://at.alicdn.com/t/font_2046339_qliavg6ijzi.js"></script>
+</body>
+</html>
