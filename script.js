@@ -18,29 +18,34 @@ ctx.lineWidth = 12
 let historyData = []
 let hasChanged = false
 let painting = false
-let clear =false
+let clear = false
 let isTouchDevice = 'ontouchstart' in document.documentElement
 if(isTouchDevice){
     canvas.ontouchstart=(e)=>{
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
+        painting = ture
         if (clear) {
             ctx.clearRect(e.x - 15, e.y - 15, 30, 30)
-        } else {
-            last = [x, y]
         }
+            last = [x, y]
+
     }
     canvas.ontouchmove=(e)=>{
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
-        if (clear) {
-            ctx.clearRect(e.x - 15, e.y - 15, 30, 30)
-        } else {
-            drawLine(last[0], last[1], x, y)
+        if(painting){
+            if (clear) {
+                ctx.clearRect(e.x - 15, e.y - 15, 30, 30)
+            }else {
+                drawLine(last[0], last[1], x, y)
+            }
             last = [x, y]
         }
+
     }
     canvas.ontouchend = (e)=>{
+        painting = false
         forwardImg = ctx.getImageData(0,0,canvas.width,canvas.height)
         saveData(forwardImg)
     }
