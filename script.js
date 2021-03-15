@@ -137,3 +137,8 @@ function saveData(data) {
     return historyData.length <= 10? historyData.push(data) : historyData.shift()
 }
 //解决拖拽问题
+
+window.onbeforeunload=()=>{
+    if(hasChanged)
+        return '是否当前未保存页面？'
+}
