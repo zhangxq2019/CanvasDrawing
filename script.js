@@ -24,13 +24,21 @@ if(isTouchDevice){
     canvas.ontouchstart=(e)=>{
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
-        last = [x,y]
+        if (clear) {
+            ctx.clearRect(e.x - 15, e.y - 15, 30, 30)
+        } else {
+            last = [x, y]
+        }
     }
     canvas.ontouchmove=(e)=>{
         let x = e.touches[0].clientX
         let y = e.touches[0].clientY
-        drawLine(last[0],last[1],x,y)
-        last = [x,y]
+        if (clear) {
+            ctx.clearRect(e.x - 15, e.y - 15, 30, 30)
+        } else {
+            drawLine(last[0], last[1], x, y)
+            last = [x, y]
+        }
     }
     canvas.ontouchend = (e)=>{
         forwardImg = ctx.getImageData(0,0,canvas.width,canvas.height)
