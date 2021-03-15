@@ -175,10 +175,6 @@ function saveData(data) {
 }
 
 //解决拖拽问题
-document.addEventListener('touchmove', e => {
-    e.preventDefalut();
-}, {passive: false})
-
 window.onbeforeunload = () => {
     if (hasChanged)
         return '当前未保存页面是否离开？'
