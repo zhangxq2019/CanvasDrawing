@@ -3,6 +3,10 @@
     margin: 0;
     box-sizing: border-box;
 }
+body {
+    position: fixed;
+    top: 0;
+}
 #canvas {
     display: block;
     /*background: pink;*/

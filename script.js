@@ -137,6 +137,3 @@ function saveData(data) {
     return historyData.length <= 10? historyData.push(data) : historyData.shift()
 }
 //解决拖拽问题
-document.body.addEventListener('touchmove',(e)=>{
-    e.preventDefault()
-})
